@@ -14,7 +14,7 @@ import { connect } from 'react-redux'
 import { addEntry } from '../actions'
 import { purple, white } from '../utils/colors'
 import { submitEntry, removeEntry } from '../utils/api'
-
+import { NavigationActions } from 'react-navigation'
 
 function SubmitBtn({ onPress }) {
     return (
@@ -34,8 +34,6 @@ class AddEntry extends Component {
         sleep: 0,
         eat: 0,
     }
-
-
 
     increment = (metric) => {
         const { max, step } = getMetricMetaInfo(metric)
@@ -71,6 +69,8 @@ class AddEntry extends Component {
 
         this.setState(() => ({ run: 0, bike: 0, swim: 0, sleep: 0, eat: 0 }))
         // Navigate to home
+        this.toHome()
+
         // Save to "DB"
         submitEntry({ key, entry })
         // Clear local notification
@@ -83,10 +83,14 @@ class AddEntry extends Component {
             [key]: getDailyReminderValue()
         }))
         // Route to Home
+        this.toHome()
         // Update "DB"
         removeEntry(key)
     }
 
+    toHome = () => {
+        this.props.navigation.dispatch(NavigationActions.back({ key: 'AddEntry' }))
+    }
 
     render() {
 
@@ -100,7 +104,7 @@ class AddEntry extends Component {
                         size={100}
                     />
                     <Text>You already logged your information for today.</Text>
-                    <TextButton style={{padding: 10}} onPress={this.reset}>
+                    <TextButton style={{ padding: 10 }} onPress={this.reset}>
                         Reset
                   </TextButton>
                 </View>
